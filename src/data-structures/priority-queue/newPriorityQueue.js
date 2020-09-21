@@ -16,12 +16,9 @@ export default class PriorityQueue{
         this.collection.splice(i, 0, [item, priority]);
         return this.collection;
       }
-      if (i === this.collection.length - 1) {
-        this.collection.push([item, priority]);
-        return this.collection;
-      }
     }
-    return null;
+    this.collection.push([item, priority]);
+    return this.collection;
   }
 
   peek() {
@@ -58,5 +55,4 @@ export default class PriorityQueue{
     }
     return false;
   }
-
 }
