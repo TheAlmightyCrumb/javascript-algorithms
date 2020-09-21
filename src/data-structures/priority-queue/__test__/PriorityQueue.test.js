@@ -1,4 +1,4 @@
-import PriorityQueue from '../PriorityQueue';
+import PriorityQueue from '../newPriorityQueue';
 
 describe('PriorityQueue', () => {
   it('should create default priority queue', () => {

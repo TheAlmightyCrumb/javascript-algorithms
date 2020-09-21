@@ -1,58 +1,62 @@
-import LinkedList from '../linked-list/LinkedList';
-
 export default class Queue {
   constructor() {
-    // We're going to implement Queue based on LinkedList since the two
-    // structures are quite similar. Namely, they both operate mostly on
-    // the elements at the beginning and the end. Compare enqueue/dequeue
-    // operations of Queue with append/deleteHead operations of LinkedList.
-    this.linkedList = new LinkedList();
+    this.capacity = 50;
+    this.data = new Array(this.capacity);
+    this.startIndex = 0;
+    this.endIndex = 0;
   }
 
-  /**
-   * @return {boolean}
-   */
-  isEmpty() {
-    return !this.linkedList.head;
+  enqueue(item) {
+    // this.data.push(item);
+    // this.data = [...this.data, item];
+    // Reached the capacity, double it!
+    if (this.size === this.capacity) {
+      const prevData = this.data;
+      const prevCapacity = this.capacity;
+      this.capacity *= 2;
+      this.data = new Array(this.capacity);
+      let j = 0;
+      for (let i = this.startIndex; i != this.endIndex; i = (i+1)%prevCapacity) {
+        this.data[j++] = prevData[i];
+      }
+    }
+    this.data[this.endIndex++] = item;
+    this.endIndex = (this.endIndex + 1) % this.capacity;
   }
 
-  /**
-   * Read the element at the front of the queue without removing it.
-   * @return {*}
-   */
-  peek() {
-    if (!this.linkedList.head) {
+  get size() {
+    if (this.endIndex > this.startIndex) {
+      return this.endIndex - this.startIndex;
+    }
+    return this.capacity - (this.startIndex - this.endIndex);
+  }
+
+  dequeue() {
+    if (this.isEmpty()) {
       return null;
     }
-
-    return this.linkedList.head.value;
+    // const [first, ...restOfData] = this.data;
+    // this.data = restOfData;
+    // return first;
+    const item = this.data[this.startIndex++];
+    return item;
+    // return this.isEmpty() ? null : this.data.shift();
   }
 
-  /**
-   * Add a new element to the end of the queue (the tail of the linked list).
-   * This element will be processed after all elements ahead of it.
-   * @param {*} value
-   */
-  enqueue(value) {
-    this.linkedList.append(value);
+  peek() {
+    return this.isEmpty() ? null : this.data[startIndex];
   }
 
-  /**
-   * Remove the element at the front of the queue (the head of the linked list).
-   * If the queue is empty, return null.
-   * @return {*}
-   */
-  dequeue() {
-    const removedHead = this.linkedList.deleteHead();
-    return removedHead ? removedHead.value : null;
+  isEmpty() {
+    return this.startIndex === this.endIndex;
   }
 
-  /**
-   * @param [callback]
-   * @return {string}
-   */
-  toString(callback) {
-    // Return string representation of the queue's linked list.
-    return this.linkedList.toString(callback);
+  toString(stringifier = x => x) {
+    // return this.data.map(stringifier).toString();
+    let str = "";
+    for (let i = this.startIndex; i < this.endIndex; i++) {
+      str += stringifier(this.data[i]) + ",";
+    }
+    return str.slice(0,-1);
   }
 }

@@ -1,67 +1,47 @@
-import LinkedList from '../linked-list/LinkedList';
-
 export default class Stack {
   constructor() {
-    // We're going to implement Stack based on LinkedList since these
-    // structures are quite similar. Compare push/pop operations of the Stack
-    // with prepend/deleteHead operations of LinkedList.
-    this.linkedList = new LinkedList();
+    this.size = 50;
+    this.data = new Array(this.size);
+    this.index = 0;
   }
 
-  /**
-   * @return {boolean}
-   */
-  isEmpty() {
-    // The stack is empty if its linked list doesn't have a head.
-    return !this.linkedList.head;
-  }
-
-  /**
-   * @return {*}
-   */
-  peek() {
-    if (this.isEmpty()) {
-      // If the linked list is empty then there is nothing to peek from.
-      return null;
+  push(item) {
+    // [1, 2]
+    // this.data.unshift(item);
+    this.data[this.index++] = item;
+    if (this.index === this.size) {
+      this.size = this.size * 2;
+      const data = this.data;
+      this.data = new Array(this.size);
+      for (let i = 0; i < data.length; i++) {
+        this.data[i] = data[i];
+      }
     }
-
-    // Just read the value from the start of linked list without deleting it.
-    return this.linkedList.head.value;
   }
 
-  /**
-   * @param {*} value
-   */
-  push(value) {
-    // Pushing means to lay the value on top of the stack. Therefore let's just add
-    // the new value at the start of the linked list.
-    this.linkedList.prepend(value);
+  peek() {
+    // return this.isEmpty() ? this.data[0] : null
+    return this.isEmpty() ? null : this.data[this.index-1];
   }
 
-  /**
-   * @return {*}
-   */
   pop() {
-    // Let's try to delete the first node (the head) from the linked list.
-    // If there is no head (the linked list is empty) just return null.
-    const removedHead = this.linkedList.deleteHead();
-    return removedHead ? removedHead.value : null;
+    // return this.isEmpty() ? null : this.data.shift();
+    return this.isEmpty() ? null : this.data[--this.index];
   }
 
-  /**
-   * @return {*[]}
-   */
+  toString(stringifier = x => x) {
+    const str = '';
+    for (let i = 0; i < this.index; i++) {
+      str = stringifier(this.data[i]) + ',' + str;
+    }
+    return str.slice(0, -1);
+  }
+
+  isEmpty() {
+    return this.index === 0;
+  }
+
   toArray() {
-    return this.linkedList
-      .toArray()
-      .map((linkedListNode) => linkedListNode.value);
-  }
-
-  /**
-   * @param {function} [callback]
-   * @return {string}
-   */
-  toString(callback) {
-    return this.linkedList.toString(callback);
+    return this.data.slice(0, this.index).reverse();
   }
 }
